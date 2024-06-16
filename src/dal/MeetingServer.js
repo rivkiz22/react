@@ -1,6 +1,8 @@
+import { defaultMeetings } from "../store/basicData";
+
 export async function postMeeting(newMeeting) {
   try {
-    console.log("postMeeting",newMeeting)
+    console.log("postMeeting", newMeeting);
 
     const response = await fetch("http://localhost:8787/appointment", {
       method: "POST",
@@ -9,8 +11,7 @@ export async function postMeeting(newMeeting) {
       },
       body: JSON.stringify(newMeeting),
     });
-    console.log('response',response)
-
+    console.log("response", response);
 
     if (response.ok) {
       return true;
@@ -18,7 +19,7 @@ export async function postMeeting(newMeeting) {
       return false;
     }
   } catch (error) {
-    console.log('responseerror',error)
+    console.log("responseerror", error);
 
     return false;
   }
@@ -27,11 +28,11 @@ export async function postMeeting(newMeeting) {
 export const getMeetings = async () => {
   try {
     const response = await fetch("http://localhost:8787/appointment");
-    if (!response.ok) {
-      return [];
+    console.log(response)
+    if (!response.ok ) {
+      return defaultMeetings;
     }
     const meetings = await response.json();
-    // ServiseStore.setServices(services);
     return meetings;
   } catch (error) {
     console.error(error);

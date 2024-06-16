@@ -10,9 +10,10 @@ const MeetingsList = observer(() => {
     <>
       <h3>רשימת הפגישות שלך:</h3>
 
-      {meetings.map((x) => (
-       <MeetingView meetingId={x.id} key={x.id}/>
-      ))}
+      {meetings.map((x) => {
+        return(
+       <MeetingView meetingId={x.id} key={x.id}/>)
+  })}
     </>
   );
 });

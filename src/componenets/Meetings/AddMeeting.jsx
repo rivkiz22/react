@@ -3,104 +3,95 @@ import React, { useState } from "react";
 import Date from "./Date";
 import meetingStore from "../../store/meetingStore";
 import ServiceStore from "../../store/ServiceStore.js";
+import Card from "@mui/material/Card";
+import CardContent from "@mui/material/CardContent";
+import Typography from "@mui/material/Typography";
+import TextField from "@mui/material/TextField";
+import Button from "@mui/material/Button";
+import Select from "@mui/material/Select";
+import MenuItem from "@mui/material/MenuItem";
 
 const AddMeeting = observer(
-  ({ selectedServiceId, selectedDateTime, close }) => {
+  ({ selectedDateTime, close, defaultService }) => {
     const { services } = ServiceStore;
-    const chooseServicevalue = selectedServiceId
-      ? services.find((service) => service.id === selectedServiceId).name
-      : "";
     const [meeting, setMeeting] = useState({
       dateTime: selectedDateTime || null,
       clientName: "",
       clientPhone: "",
       clientEmail: "",
-      chooseService: chooseServicevalue,
+      selectedService: defaultService || "",
     });
 
     const onSubmit = async () => {
-      const isAddMeetingSucces = await meetingStore.addNewMeetings(meeting);
-      if (isAddMeetingSucces) {
-        alert("הפגישה נקבעה בהצלחה");
+      const isAddMeetingSuccess = await meetingStore.addNewMeetings(meeting);
+      if (isAddMeetingSuccess) {
+        alert("הפגישה נקבעה בהצלחה ");
         close();
       } else {
         alert("התאריך תפוס, ניתן לקבוע פגישה במועד אחר");
       }
-
-      // const newMeetinaddNewMeetingsg = {
-      //   serviceName: serviceName,
-      //   serviceName: serviceName,
-      //   servicePrice: servicePrice,
-      //   dateTime: dateTime,
-      //   clientName: clientName,
-      //   clientPhone: clientPhone,
-      //   clientEmail: clientEmail,
-      // };
-      // addNewService(newMeeting);
     };
 
-    //close(false);
-    const onaccsept = (value) => {
+    const onAccsept = (value) => {
       setMeeting({ ...meeting, dateTime: value });
     };
 
     return (
-      <>
-        <label>
-          dateTime:
-          <Date
-            onAccsept={onaccsept}
-            selectedDateTime={meeting.selectedDateTime}
-          />
-        </label>
-        <label>
-          clientName:
-          <input
-            type="text"
+      <Card>
+        <CardContent>
+          <Typography variant="h5" component="div">
+            פרטי הפגישה
+          </Typography>
+
+          <Select
+            label="סוג פגישה"
+            value={meeting.selectedService}
+            onChange={(e) =>
+              setMeeting({ ...meeting, selectedService: e.target.value })
+            }
+            fullWidth
+          >
+            {services.map((option) => (
+              <MenuItem key={option.id} value={option.name}>
+                {option.name}
+              </MenuItem>
+            ))}
+          </Select>
+
+          <Date onAccsept={onAccsept} selectedDateTime={meeting.dateTime} />
+
+          <TextField
+            label="שם"
             value={meeting.clientName}
             onChange={(e) =>
               setMeeting({ ...meeting, clientName: e.target.value })
             }
+            fullWidth
           />
-        </label>
-        <label>
-          clientPhone:
-          <input
-            type="text" //איך בודקים שזה טלפון
+          <TextField
+            label="טלפון"
             value={meeting.clientPhone}
             onChange={(e) =>
               setMeeting({ ...meeting, clientPhone: e.target.value })
             }
+            fullWidth
           />
-        </label>
-        <label>
-          clientEmail:
-          <input
+
+          <TextField
+            label="מייל"
             type="email"
             value={meeting.clientEmail}
             onChange={(e) =>
               setMeeting({ ...meeting, clientEmail: e.target.value })
             }
+            fullWidth
           />
-        </label>
-        <label>
-          service:
-          <select
-            value={meeting.selectedService}
-            onChange={(e) =>
-              setMeeting({ ...meeting, selectedService: e.target.value })
-            }
-          >
-            {services.map((option) => (
-              <option key={option.id} value={option.id}>
-                {option.name}
-              </option>
-            ))}
-          </select>
-        </label>
-
-        <button onClick={onSubmit}>אישור</button>
-      </>
+          
+        </CardContent>
+        <Button onClick={onSubmit} variant="contained" color="primary">
+          אישור
+        </Button>
+      </Card>
     );
   }
 );

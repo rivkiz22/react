@@ -1,27 +1,34 @@
 import { observable, action, makeObservable } from "mobx";
-import logo from '../logo/footer-logo.png.webp'
+import { getBusinessData, postBusinessData } from "../dal/BusinessData";
 
-const business = {
-    name: "רפואה טבעית",
-    address: "ר' עקיבא 100 בני ברק",
-    phone: "03-6166666",
-    owner: "רבקה לנדאו",
-    logo: logo,
-    description:"ברפואה-משלימה אינטגרטיבית למגוון רחב של בעיות בהתאמה אישית ובפיקוח רפואי.",
-  };
-  
-class BusinessDataStore{
-    BusinessData= business
+class BusinessDataStore {
+  businessDataDetails = {};
 
-constructor() {
-    makeObservable(this,{
-        BusinessData:observable,
-        editBusinessData:action,
+  constructor() {
+    makeObservable(this, {
+      businessDataDetails: observable,
+      editBusinessData: action,
     });
-}
+    this.init();
+  }
 
-editBusinessData = (newData) => {
-    this.BusinessData(...newData);
+  init = async () => {
+    this.businessDataDetails = await getBusinessData();
+  };
+
+  editBusinessData = async (newData) => {
+    try {
+      const response = await postBusinessData(newData);
+      if (response) {
+        this.businessDataDetails = newData;
+        return true;
+      } else {
+        return false;
+      }
+    } catch (error) {
+      console.error("Error editing business data:", error);
+      return false;
+    }
   };
 }
 

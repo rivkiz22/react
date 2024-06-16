@@ -1,34 +1,35 @@
 //mobx
 import { observable, action, makeObservable } from "mobx";
-
-const defaultServices = [
-  { id: 0, name: "רפלקסולוגיה", price: "300", desciption: "aaaaaaa" },
-  { id: 1, name: "עיסויים", price: "200", desciption: "bbbbbbb" },
-  { id: 2, name: "צמחי מרפא", price: "250", desciption: "rrrrrrrrrr" },
-  { id: 3, name: "תזונה", price: "180", desciption: "eeeeeeee" },
-];
+import { getServices, addService } from "../dal/ServiceServer";
 
 class servicesStore {
-  services = defaultServices;
+  services = [];
 
   constructor() {
     makeObservable(this, {
       services: observable,
-      // removeService: action,
       addNewService: action,
       editService: action,
     });
+    this.init();
   }
 
-  editService = (serviceId, newService) => {
-    this.services[serviceId] = { id: serviceId, ...newService };
+  init = async () => {
+    this.services = await getServices();
   };
 
-  addNewService = (newService) => {
-    this.services = [
-      ...this.services,
-      { id: this.services.length, ...newService },
-    ];
+  editService = async (serviceId, newService) => {
+    const service = { id: serviceId, ...newService };
+    const response = await addService(service);
+    this.services[serviceId] = service;
+    return response;
+  };
+
+  addNewService = async (newService) => {
+    const service = { id: this.services.length, ...newService };
+    const response = await addService(service);
+    this.services = [...this.services, , service];
+    return response;
   };
 }
 

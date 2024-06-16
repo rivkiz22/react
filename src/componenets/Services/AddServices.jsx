@@ -1,6 +1,11 @@
 import { observer } from "mobx-react";
 import { useState } from "react";
 import servicesStore from "../../store/ServiceStore";
+import Card from "@mui/material/Card";
+import CardContent from "@mui/material/CardContent";
+import Typography from "@mui/material/Typography";
+import TextField from "@mui/material/TextField";
+import Button from "@mui/material/Button";
 
 const AddServices = observer(({ service, close }) => {
   const [name, setName] = useState(service?.name || "");
@@ -11,46 +16,51 @@ const AddServices = observer(({ service, close }) => {
 
   const onSubmit = () => {
     const newService = { name: name, price: price, desciption: desciption };
-    //console.log('hi')
+    let response;
     if (service) {
-      editService(service.id, newService);
+      response= editService(service.id, newService);
     } else {
-      addNewService(newService);
+      response= addNewService(newService);
     }
-    close(false);
+    if (response){
+      close(false);
+    }
+    else{
+      alert("error try again")
+    }
+    
   };
 
   return (
-    <>
-      <label>
-        name:
-        <input
-          type="text"
+    <Card>
+      <CardContent>
+        <Typography variant="h5" component="div">
+          {service ? "עריכת שירות" : "הוספת שירות חדש"}
+        </Typography>
+        <TextField
+          label="שם"
           value={name}
           onChange={(e) => setName(e.target.value)}
+          fullWidth
         />
-      </label>
-      <label>
-        price:
-        <input
-          type="text"
+        <TextField
+          label="מחיר"
           value={price}
           onChange={(e) => setPrice(e.target.value)}
+          fullWidth
         />
-      </label>
-      <label>
-        desciption:
-        <input
-          type="text"
+        <TextField
+          label="תיאור"
           value={desciption}
           onChange={(e) => setDesciption(e.target.value)}
+          fullWidth
         />
-      </label>
-      <button onClick={onSubmit}>אישור</button>
-    </>
+      </CardContent>
+      <Button onClick={onSubmit} variant="contained" color="primary">
+        אישור
+      </Button>
+    </Card>
   );
 });
 
 export default AddServices;
-
-

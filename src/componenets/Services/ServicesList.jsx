@@ -19,11 +19,13 @@ const ServicesList = observer(() => {
         <>
           {services.map((curerntServise) => {
             return (
-              <Service
-                service={curerntServise}
-                key={curerntServise.id}
-                isAdmin={isAdmin}
-              />
+              <div style={{margin:"1rem"}}>
+                <Service
+                  service={curerntServise}
+                  key={curerntServise.id}
+                  isAdmin={isAdmin}
+                />
+              </div>
             );
           })}
           {isAdmin && (
@@ -31,8 +33,6 @@ const ServicesList = observer(() => {
           )}
         </>
       )}
-
-      {/* <Date /> */}
     </>
   );
 });
